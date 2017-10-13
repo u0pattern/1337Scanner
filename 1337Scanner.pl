@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use IO::Socket;
-print "\n
+system('cls');
+print qq(
      ___________________________
     !\_________________________/!\
     !!                         !! \
@@ -21,38 +22,38 @@ print "\n
    /oooo  oooo  oooo  oooo /!
   /ooooooooooooooooooooooo/ /
  /ooooooooooooooooooooooo/ /
-/C=_____________________/_/
+/_______________________/_/
                     
-                    Note : (CRTL + C) = Exit \n";
-print "\n\n";
+                    Note : (CRTL + C) = Exit);
 print "\n\n";
 $| = 1;
 print qq(
-            Enter Target Or IP :
-            > );
-$target=<STDIN>;
-chomp($target);
+Enter List of Target Or IP :
+> );
+$targets=<STDIN>;
+chomp($targets);
+open (TARGETFILE, "<$targets") || die "[-] Can't Found ($targets) !";
+@TARGETS = <TARGETFILE>;
+close TARGETFILE;
 print qq(
-            Enter Start Port :
-            > );
+Enter Start Port :
+> );
 $start=<STDIN>;
 chomp($start);
 print qq(
-            Enter End Port :
-            > );
+Enter End Port :
+> );
 $end=<STDIN>;
 chomp($end);
-foreach ($port = $start ; $port <= $end ; $port++) 
-{
-    print "\r    Scanning port $port";
-    $socket = IO::Socket::INET->new(PeerAddr => $target , PeerPort => $port , Proto => 'tcp' , Timeout => 1);
-    if( $socket )
-    {
-        print "\r    { Port : $port is opened }\n" ;
-    }
-    else
-    {
-    }
+foreach $target (@TARGETS) {
+chomp $target;
+	foreach ($port = $start ; $port <= $end ; $port++) 
+	{
+		print "Scanning $target (port $port)\n";
+		$socket = IO::Socket::INET->new(PeerAddr => $target , PeerPort => $port , Proto => 'tcp' , Timeout => 1);
+		if( $socket )
+		{
+			print "Host: $target | Port : $port is opened \n" ;
+		}else{}
+	}
 }
-print "\n\nFinished $target\n";
-exit (0);
